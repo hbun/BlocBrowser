@@ -68,14 +68,16 @@
     
     //First, calculate some dimentions:
     static const CGFloat itemHeight = 50;
+    CGFloat toolBarHeight = CGRectGetHeight(self.awesomeToolbar.bounds);
     CGFloat width = CGRectGetWidth(self.view.bounds);
     CGFloat browserHeight = CGRectGetHeight(self.view.bounds) - itemHeight;
+    CGFloat toolBarY = CGRectGetHeight(self.view.bounds) - toolBarHeight;
     
     // Now, assign the frames:
     self.textField.frame = CGRectMake(0, 0, width, itemHeight);
     self.webView.frame = CGRectMake(0, CGRectGetMaxY(self.textField.frame), width, browserHeight);
     
-    self.awesomeToolbar.frame = CGRectMake(20, 100, 280, 60);
+    self.awesomeToolbar.frame = CGRectMake(0, toolBarY, 280, 60);
 }
 
 
@@ -161,7 +163,7 @@
     
     WKWebView *newWebView = [[WKWebView alloc] init];
     newWebView.navigationDelegate = self;
-    [self.view addSubview:newWebView];
+    [self.view insertSubview:newWebView belowSubview:self.awesomeToolbar];
     
     self.webView = newWebView;
     
@@ -170,16 +172,17 @@
 }
 
 - (void) floatingToolbar:(AwesomeFloatingToolbar *)toolbar didSelectButtonWithTitle:(NSString *)title {
-    if ([title isEqual:NSLocalizedString(@"Back", @"Back command")]) {
+    if ([title isEqual:kWebBrowserBackString]) {
         [self.webView goBack];
-    } else if ([title isEqual:NSLocalizedString(@"Forward", @"Forward command")]) {
+    } else if ([title isEqual:kWebBrowserForwardString]) {
         [self.webView goForward];
-    } else if ([title isEqual:NSLocalizedString(@"Stop", @"Stop command")]) {
+    } else if ([title isEqual:kWebBrowserStopString]) {
         [self.webView stopLoading];
-    } else if ([title isEqual:NSLocalizedString(@"Refresh", @"Refresh command")]) {
+    } else if ([title isEqual:kWebBrowserRefreshString]) {
         [self.webView reload];
     }
 }
+
 @end
 
 
