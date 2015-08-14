@@ -161,13 +161,15 @@
     
     WKWebView *newWebView = [[WKWebView alloc] init];
     newWebView.navigationDelegate = self;
-    [self.view addSubview:newWebView];
+    [self.view insertSubview:newWebView belowSubview: self.awesomeToolbar];
     
     self.webView = newWebView;
     
     self.textField.text = nil;
     [self updateButtonsAndTitle];
 }
+
+#pragma mark - Floating Toolbar
 
 - (void) floatingToolbar:(AwesomeFloatingToolbar *)toolbar didSelectButtonWithTitle:(NSString *)title {
     if ([title isEqual:NSLocalizedString(@"Back", @"Back command")]) {
@@ -178,6 +180,17 @@
         [self.webView stopLoading];
     } else if ([title isEqual:NSLocalizedString(@"Refresh", @"Refresh command")]) {
         [self.webView reload];
+    }
+}
+
+- (void) floatingToolbar:(AwesomeFloatingToolbar *)toolbar didTryToPanWithOffset:(CGPoint)offset {
+    CGPoint startingPoint = toolbar.frame.origin;
+    CGPoint newPoint = CGPointMake(startingPoint.x + offset.x, startingPoint.y + offset.y);
+    
+    CGRect potentialNewFrame = CGRectMake(newPoint.x, newPoint.y, CGRectGetWidth(toolbar.frame), CGRectGetHeight(toolbar.frame));
+    
+    if (CGRectContainsRect(self.view.bounds, potentialNewFrame)) {
+        toolbar.frame = potentialNewFrame;
     }
 }
 @end
