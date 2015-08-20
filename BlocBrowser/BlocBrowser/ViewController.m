@@ -60,7 +60,7 @@
     
     self.activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:self.activityIndicator];
-    
+    self.awesomeToolbar.frame = CGRectMake(20, 100, 280, 60);
 }
 
 - (void) viewWillLayoutSubviews {
@@ -75,7 +75,7 @@
     self.textField.frame = CGRectMake(0, 0, width, itemHeight);
     self.webView.frame = CGRectMake(0, CGRectGetMaxY(self.textField.frame), width, browserHeight);
     
-    self.awesomeToolbar.frame = CGRectMake(20, 100, 280, 60);
+    
 }
 
 
@@ -92,7 +92,6 @@
     if (!URL.scheme) {
         // The user didn't type http: or https:
         URL = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@", URLString]];
-        
     }
     
     if (URL) {
@@ -136,6 +135,8 @@
 
 #pragma mark - Miscellaneous
 
+
+
 - (void) updateButtonsAndTitle {
     NSString *webpageTitle = [self.webView.title copy];
     if ([webpageTitle length]) {
@@ -150,10 +151,12 @@
         [self.activityIndicator stopAnimating];
     }
     
-    [self.awesomeToolbar setEnabled:[self.webView canGoBack] forButtonWithTitle:kWebBrowserBackString];
-    [self.awesomeToolbar setEnabled:[self.webView canGoForward] forButtonWithTitle:kWebBrowserForwardString];
-    [self.awesomeToolbar setEnabled:[self.webView isLoading] forButtonWithTitle:kWebBrowserStopString];
-    [self.awesomeToolbar setEnabled:![self.webView isLoading] && self.webView.URL forButtonWithTitle:kWebBrowserRefreshString];
+    
+    [self.awesomeToolbar setEnabled:[self.webView canGoBack] forButton:self.awesomeToolbar.backButton];
+    [self.awesomeToolbar setEnabled:[self.webView canGoForward] forButton:self.awesomeToolbar.forwardButton];
+    [self.awesomeToolbar setEnabled:[self.webView isLoading] forButton:self.awesomeToolbar.stopButton];
+    [self.awesomeToolbar setEnabled:![self.webView isLoading] && self.webView.URL forButton:self.awesomeToolbar.reloadButton];
+
 }
 
 - (void) resetWebView {
@@ -167,6 +170,7 @@
     
     self.textField.text = nil;
     [self updateButtonsAndTitle];
+    
 }
 
 #pragma mark - Floating Toolbar
@@ -193,12 +197,13 @@
         toolbar.frame = potentialNewFrame;
     }
 }
+
+- (void) floatingToolbar:(AwesomeFloatingToolbar *)toolbar didPinchWithScale:(CGFloat)scale {
+
+    CGAffineTransform currentTransform = CGAffineTransformIdentity;
+    CGAffineTransform newTransform = CGAffineTransformScale(currentTransform, scale, scale);
+    toolbar.transform = newTransform;
+         
+}
+
 @end
-
-
-
-
-
-
-
-
